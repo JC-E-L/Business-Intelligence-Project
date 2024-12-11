@@ -77,7 +77,7 @@ top_products = top_products.sort_values(by='Total Sales', ascending=False)
 top_products_chart = px.imshow(
     [top_products['Total Sales'].values],  # The data for the heatmap (list of total sales values)
     labels={'x': 'Stock Code', 'y': 'Total Sales'},
-    color_continuous_scale='Cividis',  # Choose a color scale for the heatmap
+    color_continuous_scale='Inferno',  # Choose a color scale for the heatmap
     aspect='auto',  # Automatically adjust the aspect ratio
     title="Top 10 Selling Products Heatmap",
 )
@@ -123,7 +123,7 @@ sales_by_country_chart = px.bar(
     y='Total Sales', 
     title='Total Sales by Country', 
     color='Total Sales',  # Use Total Sales for color intensity (heatmap-like effect)
-    color_continuous_scale='Cividis'  # Color scale similar to heatmap
+    color_continuous_scale='Inferno'  # Color scale similar to heatmap
 )
 
 # Update layout for the bar chart
@@ -203,12 +203,12 @@ rfm['cluster'] = kmeans.fit_predict(rfm_scaled)
 # Create a scatter plot with Frequency (y-axis) and Monetary (x-axis)
 fig = px.scatter(
     rfm, 
-    x='monetary',  # Total Spend (x-axis)
-    y='frequency',  # Number of Transactions (y-axis)
-    color='cluster',  # Color by cluster
+    x='monetary',  
+    y='frequency', 
+    color='cluster',
     title="Frequency vs. Monetary Value",
     labels={'frequency': 'Number of Transactions (Frequency)', 'monetary': 'Total Spent (Monetary Value)'},
-    color_continuous_scale=px.colors.sequential.Viridis
+    color_continuous_scale=px.colors.sequential.Inferno
 )
 
 fig.update_layout(title={'font': {'color': '#636EFA'}})

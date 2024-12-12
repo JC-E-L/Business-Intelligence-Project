@@ -32,10 +32,10 @@ sales_data['invoice_date'] = pd.to_datetime(sales_data['invoice_date']).dt.tz_lo
 st.sidebar.markdown("<h2 style='color: #636EFA; '>Filter Options</h2>", unsafe_allow_html=True)
 st.sidebar.markdown("<h2 style='color: #FF5733; '>Date</h2>", unsafe_allow_html=True)
 date_range = st.sidebar.date_input("Select a Date Range", 
-                                   [sales_data['invoice_date'].min(), sales_data['invoice_date'].max()])
+                                [sales_data['invoice_date'].min(), sales_data['invoice_date'].max()])
 st.sidebar.markdown("<h3 style='color: #FF5733;'>Country</h3>", unsafe_allow_html=True)
 selected_country = st.sidebar.multiselect('Select a Country', options=sales_data['country'].unique(), 
-                                          default=sales_data['country'].unique())
+                                        default=sales_data['country'].unique())
 st.sidebar.markdown("<h3 style='color: #FF5733;'>Product</h3>", unsafe_allow_html=True)
 selected_product = st.sidebar.multiselect('Select a Product', options=sales_data['stock_code'].unique())
 
@@ -45,9 +45,9 @@ price_range = st.sidebar.slider('Select a Price Range', float(sales_data['unit_p
 
 # Apply filters
 filtered_data = sales_data[(sales_data['invoice_date'] >= pd.to_datetime(date_range[0])) & 
-                           (sales_data['invoice_date'] <= pd.to_datetime(date_range[1])) & 
-                           (sales_data['unit_price'] >= price_range[0]) & 
-                           (sales_data['unit_price'] <= price_range[1])]
+                        (sales_data['invoice_date'] <= pd.to_datetime(date_range[1])) & 
+                        (sales_data['unit_price'] >= price_range[0]) & 
+                        (sales_data['unit_price'] <= price_range[1])]
 if selected_country:
     filtered_data = filtered_data[filtered_data['country'].isin(selected_country)]
 if selected_product:
@@ -116,14 +116,14 @@ sales_by_country.rename(columns={'country': 'Country', 'total_sales': 'Total Sal
 # Sort data by Total Sales in descending order
 sales_by_country = sales_by_country.sort_values(by='Total Sales', ascending=False)
 
-# Create a bar chart with a color scale like a heatmap
+# Sales by country bar chart heatmap
 sales_by_country_chart = px.bar(
     sales_by_country, 
     x='Country', 
     y='Total Sales', 
     title='Total Sales by Country', 
-    color='Total Sales',  # Use Total Sales for color intensity (heatmap-like effect)
-    color_continuous_scale='Inferno'  # Color scale similar to heatmap
+    color='Total Sales', 
+    color_continuous_scale='Inferno' 
 )
 
 # Update layout for the bar chart
@@ -131,10 +131,8 @@ sales_by_country_chart.update_layout(
     title={'text': 'Total Sales by Country', 'font': {'color': '#636EFA'}},  # Set the title font color
     xaxis_title='Country', 
     yaxis_title='Total Sales',
-    xaxis_tickangle=-45  # Rotate x-axis labels for better visibility
+    xaxis_tickangle=-45
 )
-
-# Display the bar chart
 st.plotly_chart(sales_by_country_chart)
 
 # Monthly Sales and Growth Rate Calculation
@@ -162,7 +160,7 @@ growth_rate_chart.update_layout(
 )
 st.plotly_chart(growth_rate_chart)
 
-
+#Customer segmentation
 st.markdown("<h1 style='color: #636EFA;'>Customer Segmentation</h1>", unsafe_allow_html=True)
 sales_data = pd.read_sql_query('''
     SELECT 

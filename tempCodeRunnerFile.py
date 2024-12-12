@@ -1,1 +1,0 @@
-print(sales_data.columns)

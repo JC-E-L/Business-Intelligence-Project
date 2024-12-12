@@ -16,7 +16,7 @@ product_data = pd.read_sql_query('SELECT productdim_id, stock_code FROM product_
 customer_data = pd.read_sql_query('SELECT customerdim_id, country FROM customer_dimension', con=engine)
 date_data = pd.read_sql_query('SELECT datedim_id, invoice_date FROM date_dimension', con=engine)
 
-# Calculate total_sales if it's missing
+#Calculate total_sales if it's missing
 if 'total_sales' not in sales_data.columns:
     sales_data['total_sales'] = sales_data['quantity'] * sales_data['unit_price'] 
 
@@ -28,7 +28,8 @@ sales_data = sales_data.merge(date_data, on='datedim_id', how='left')
 # Convert 'invoice_date' to timezone-naive datetime
 sales_data['invoice_date'] = pd.to_datetime(sales_data['invoice_date']).dt.tz_localize(None)
 
-# Sidebar filters
+############################################################################################################
+# Sidebar FILTER OPTIONS
 st.sidebar.markdown("<h2 style='color: #636EFA; '>Filter Options</h2>", unsafe_allow_html=True)
 st.sidebar.markdown("<h2 style='color: #FF5733; '>Date</h2>", unsafe_allow_html=True)
 date_range = st.sidebar.date_input("Select a Date Range", 
@@ -53,7 +54,8 @@ if selected_country:
 if selected_product:
     filtered_data = filtered_data[filtered_data['stock_code'].isin(selected_product)]
 
-# Dashboard title
+############################################################################################################
+# Dashboard title ONLINE SALES DASHBOARD
 st.markdown("<h1 style='color: #EF553B;'>Online Sales Dashboard</h1>", unsafe_allow_html=True)
 
 # Total Sales and Average Order Values
@@ -65,7 +67,8 @@ avg_order_value = total_sales / total_orders if total_orders else 0
 col1, col2 = st.columns(2)
 col1.metric("Total Sales", f"${total_sales:,.2f}")
 col2.metric("Average Order Value", f"${avg_order_value:,.2f}")
-
+############################################################################################################
+#TOP 10 SELLING PRODUCTS
 # Group data by product and calculate total sales
 top_products = filtered_data.groupby('stock_code')['total_sales'].sum().nlargest(10).reset_index()
 top_products.rename(columns={'stock_code': 'Stock Code', 'total_sales': 'Total Sales'}, inplace=True)
@@ -109,6 +112,8 @@ top_products_chart.update_traces(
 # Display the heatmap
 st.plotly_chart(top_products_chart)
 
+#############################################################################################################
+#TOTAL SALES BY COUNTRY
 # Group data by country and calculate total sales
 sales_by_country = filtered_data.groupby('country')['total_sales'].sum().reset_index()
 sales_by_country.rename(columns={'country': 'Country', 'total_sales': 'Total Sales'}, inplace=True)
@@ -135,6 +140,7 @@ sales_by_country_chart.update_layout(
 )
 st.plotly_chart(sales_by_country_chart)
 
+#############################################################################################################
 # Monthly Sales and Growth Rate Calculation
 filtered_data['Month'] = filtered_data['invoice_date'].dt.to_period('M')
 monthly_sales = filtered_data.groupby('Month')['total_sales'].sum().to_frame()
@@ -160,6 +166,7 @@ growth_rate_chart.update_layout(
 )
 st.plotly_chart(growth_rate_chart)
 
+#############################################################################################################
 #Customer segmentation
 st.markdown("<h1 style='color: #636EFA;'>Customer Segmentation</h1>", unsafe_allow_html=True)
 sales_data = pd.read_sql_query('''
@@ -212,6 +219,7 @@ fig = px.scatter(
 fig.update_layout(title={'font': {'color': '#636EFA'}})
 st.plotly_chart(fig)
 
+#############################################################################################################
 # Predictive Analysis with Linear Regression
 st.markdown("<h1 style='color: #636EFA;'>Sales Forecasting</h1>", unsafe_allow_html=True)
 filtered_data['Month'] = filtered_data['invoice_date'].dt.to_period('M')
@@ -236,6 +244,7 @@ fig_forecast.update_layout(
 )
 st.plotly_chart(fig_forecast)
 
+#############################################################################################################
 # Forecast future sales
 future_months = pd.DataFrame({'MonthIndex': np.arange(len(monthly_sales), len(monthly_sales) + 12)})
 future_sales = lin_reg.predict(future_months)

@@ -18,7 +18,7 @@ date_data = pd.read_sql_query('SELECT datedim_id, invoice_date FROM date_dimensi
 
 # Calculate total_sales if it's missing
 if 'total_sales' not in sales_data.columns:
-    sales_data['total_sales'] = sales_data['quantity'] * sales_data['unit_price']
+    sales_data['total_sales'] = sales_data['quantity'] * sales_data['unit_price'] 
 
 # Merge tables to complete the sales dataset
 sales_data = sales_data.merge(product_data, on='productdim_id', how='left')
